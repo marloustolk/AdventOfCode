@@ -15,25 +15,33 @@ public class Day5_SeatDecoder {
 
     static void first() {
         List<BoardingPass> boardingPasses = getBoardingPasses().stream().map(BoardingPass::new).collect(toList());
-        BoardingPass boardingPass = boardingPasses.stream()
-                .max(Comparator.comparingInt(pass -> pass.seatId))
-                .orElseThrow(IllegalArgumentException::new);
+        BoardingPass boardingPass = getHighestSeatId(boardingPasses);
         System.out.println(String.format("Day 5.1. %s, answer = %s is highest seatId", boardingPass, boardingPass.seatId));
     }
 
     static void second() {
-        List<Integer> boardingPasses = getBoardingPasses().stream().map(string -> new BoardingPass(string).seatId).collect(toList());
-        int myPass = IntStream.range(0, 838)
-                .filter(i -> !boardingPasses.contains(i))
-                .filter(i -> boardingPasses.contains(i + 1) && boardingPasses.contains(i - 1))
-                .findFirst()
-                .orElseThrow(IllegalArgumentException::new);
+        int myPass = findMissingBoardingPass();
         System.out.println(String.format("Day 5.2. [number is not in list, but +1 and -1 are], answer = %s", myPass));
     }
 
     @SuppressWarnings("ConstantConditions")
     private static List<String> getBoardingPasses() {
         return InputReader.readInput("/boarding-passes.txt").getInput();
+    }
+
+    private static BoardingPass getHighestSeatId(List<BoardingPass> boardingPasses) {
+        return boardingPasses.stream()
+                .max(Comparator.comparingInt(pass -> pass.seatId))
+                .orElseThrow(IllegalArgumentException::new);
+    }
+
+    private static int findMissingBoardingPass() {
+        List<Integer> boardingPasses = getBoardingPasses().stream().map(string -> new BoardingPass(string).seatId).collect(toList());
+        return IntStream.range(0, 838)
+                .filter(i -> !boardingPasses.contains(i))
+                .filter(i -> boardingPasses.contains(i + 1) && boardingPasses.contains(i - 1))
+                .findFirst()
+                .orElseThrow(IllegalArgumentException::new);
     }
 
     static class BoardingPass {

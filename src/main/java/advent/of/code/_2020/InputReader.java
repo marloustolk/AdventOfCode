@@ -53,10 +53,17 @@ public class InputReader {
 
         public List<Map<String, String>> toListOfMaps(String delimiterKeyValue, String delimiterEntry, String delimiterMap) {
             return Arrays.stream(String.join(delimiterEntry, input).split(delimiterMap))
-                    .map(person -> Arrays.stream(person.split(delimiterEntry))
+                    .map(entry -> Arrays.stream(entry.split(delimiterEntry))
                             .collect(Collectors.toMap(
                                     field -> field.split(delimiterKeyValue)[0],
                                     field -> field.split(delimiterKeyValue)[1])))
+                    .collect(Collectors.toList());
+        }
+
+        public List<List<String>> toListOfLists(String delimiterSubList, String delimiterList) {
+            return Arrays.stream(String.join(delimiterSubList, input).split(delimiterList))
+                    .map(sublist -> Arrays.stream(sublist.split(delimiterSubList))
+                            .collect(Collectors.toList()))
                     .collect(Collectors.toList());
         }
     }
